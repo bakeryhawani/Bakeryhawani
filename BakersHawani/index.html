@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hawani Bakers | Premium Store & Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #ff6f61; --secondary: #4a90e2; --success: #2ecc71;
+            --bg: #fdf5f0; --text: #333; --card-bg: #fff;
+        }
+        body.dark-mode { --bg: #1a1a1a; --text: #f0f0f0; --card-bg: #2d2d2d; }
+
+        body { font-family: 'Montserrat', sans-serif; margin:0; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+        /* --- Navigation --- */
+        nav {
+            background: var(--card-bg); padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-links button { background: none; border: none; color: var(--text); font-weight: 600; cursor: pointer; margin-left: 20px; }
+        .nav-links button.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        /* --- Sections --- */
+        section { padding: 40px 8%; display: none; }
+        section.active { display: block; }
+
+        /* --- Product Grid --- */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .product-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .product-card:hover { transform: translateY(-5px); }
+        .card-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+        .card-content { padding: 15px; text-align: center; }
+
+        /* --- Dashboard --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .stat-value { font-size: 1.8em; font-weight: 700; color: var(--primary); }
+        
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        th { background: var(--secondary); color: white; }
+
+        .btn-order { width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .mpesa-btn { background: #28a745 !important; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo"><strong>HAWANI</strong> BAKERS</div>
+    <div class="nav-links">
+        <button onclick="showPage('store')" id="btn-store" class="active">Store</button>
+        <button onclick="showPage('dashboard')" id="btn-dash">Admin Dashboard</button>
+        <button onclick="toggleDarkMode()">🌓</button>
+    </div>
+</nav>
+
+<section id="store" class="active">
+    <div style="margin-bottom: 30px;">
+        <input type="text" id="searchBar" placeholder="Search 30+ items..." onkeyup="filterProducts()" style="padding: 12px; width: 100%; border-radius: 25px; border: 1px solid #ddd;">
+    </div>
+    <div class="products-grid" id="productGrid"></div>
+
+    <div style="margin-top: 40px; background: var(--card-bg); padding: 25px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+            <h3>Your Basket</h3>
+            <div id="basketList">Your basket is empty.</div>
+            <h2 id="totalAmount">Total: KES 0</h2>
+        </div>
+        <form id="paymentForm">
+            <h3>M-Pesa Checkout</h3>
+            <input type="tel" id="mpesaPhone" placeholder="2547XXXXXXXX" required style="width:100%; padding:12px; margin-bottom:10px; border-radius: 8px; border: 1px solid #ccc;">
+            <button type="submit" id="payBtn" class="btn-order mpesa-btn">Pay via M-Pesa</button>
+        </form>
+    </div>
+</section>
+
+<section id="dashboard">
+    <div class="stats-grid">
+        <div class="stat-card"><p>Total Sales</p><div class="stat-value">KES <span id="dash-revenue">0</span></div></div>
+        <div class="stat-card"><p>Orders Today</p><div class="stat-value" id="dash-orders">0</div></div>
+    </div>
+    <h3>Live Transaction Log</h3>
+    <table>
+        <thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="transaction-table"></tbody>
+    </table>
+</section>
+
+<script>
+    let basket = [];
+    // REPLACE THIS with your actual Google Script Web App URL
+    const GOOGLE_SHEET_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
+
+    // --- 1. GENERATE 30 PRODUCTS ---
+    const menuItems = ["Choco Fudge", "Vanilla Cloud", "Glazed Donut", "Fruit Tart", "Red Velvet", "Cinnamon Roll"];
+    function loadProducts() {
+        const grid = document.getElementById('productGrid');
+        for(let i=1; i<=30; i++) {
+            const item = menuItems[(i-1) % menuItems.length];
+            const price = 600 + (i * 20);
+            grid.innerHTML += `
+                <div class="product-card" data-name="${item}">
+                    <img src="images/cake${i}.jpg" class="card-img" onerror="this.src='https://via.placeholder.com/200x160?text=Bakery+Item'">
+                    <div class="card-content">
+                        <h4>${item} #${i}</h4>
+                        <p>KES ${price}</p>
+                        <button class="btn-order" onclick="addToBasket('${item} #${i}', ${price})">Add to Basket</button>
+                    </div>
+                </div>`;
+        }
+    }
+
+    // --- 2. BASKET LOGIC ---
+    function addToBasket(name, price) {
+        basket.push({name, price});
+        const list = document.getElementById('basketList');
+        list.innerHTML = basket.map(i => `<div style="display:flex; justify-content:space-between;"><span>${i.name}</span><span>KES ${i.price}</span></div>`).join('');
+        const total = basket.reduce((sum, i) => sum + i.price, 0);
+        document.getElementById('totalAmount').innerText = `Total: KES ${total}`;
+    }
+
+    // --- 3. MPESA & SHEETS SYNC ---
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('mpesaPhone').value;
+        const total = basket.reduce((sum, i) => sum + i.price, 0);
+
+        // Send to your Node.js Backend
+        fetch('http://localhost:3000/pay', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({phone, amount: total})
+        });
+
+        // Log to Google Sheets
+        fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({phone, amount: total})
+        });
+
+        // Update Dashboard
+        const row = `<tr><td>${new Date().toLocaleTimeString()}</td><td>${phone}</td><td>KES ${total}</td><td>✅ Sent</td></tr>`;
+        document.getElementById('transaction-table').insertAdjacentHTML('afterbegin', row);
+        document.getElementById('dash-revenue').innerText = parseInt(document.getElementById('dash-revenue').innerText) + total;
+        document.getElementById('dash-orders').innerText = parseInt(document.getElementById('dash-orders').innerText) + 1;
+
+        alert("M-Pesa Push Sent! Sales logged to dashboard.");
+        basket = [];
+    });
+
+    // --- UTILITIES ---
+    function showPage(pageId) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + (pageId === 'store' ? 'store' : 'dash')).classList.add('active');
+    }
+
+    function filterProducts() {
+        let input = document.getElementById('searchBar').value.toLowerCase();
+        let cards = document.getElementsByClassName('product-card');
+        for (let card of cards) {
+            let name = card.getAttribute('data-name').toLowerCase();
+            card.style.display = name.includes(input) ? "block" : "none";
+        }
+    }
+
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+    window.onload = loadProducts;
+</script>
+</body>
+</html>
