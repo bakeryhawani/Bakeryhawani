@@ -8,42 +8,81 @@
     <style>
         :root { 
             --primary: #ff6f61; --secondary: #4a90e2; --success: #2ecc71;
-            --bg: #fdf5f0; --text: #333; --card-bg: #fff;
+            --bg: #fdf5f0; --text: #333; --card-bg: #ffffff;
+            --glass: rgba(255, 255, 255, 0.8);
         }
-        body.dark-mode { --bg: #1a1a1a; --text: #f0f0f0; --card-bg: #2d2d2d; }
+        body.dark-mode { 
+            --bg: #121212; --text: #f0f0f0; --card-bg: #1e1e1e; 
+            --glass: rgba(30, 30, 30, 0.8);
+        }
 
-        body { font-family: 'Montserrat', sans-serif; margin:0; background: var(--bg); color: var(--text); transition: 0.3s; }
+        body { font-family: 'Montserrat', sans-serif; margin:0; background: var(--bg); color: var(--text); transition: 0.3s; line-height: 1.6; }
 
-        /* --- Navigation --- */
+        /* --- Modern Navigation --- */
         nav {
-            background: var(--card-bg); padding: 15px 5%; display: flex; justify-content: space-between;
-            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--glass); backdrop-filter: blur(10px);
+            padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 1000; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
-        .nav-links button { background: none; border: none; color: var(--text); font-weight: 600; cursor: pointer; margin-left: 20px; }
+        .logo { font-size: 1.5rem; color: var(--primary); letter-spacing: 1px; }
+        .nav-links button { 
+            background: none; border: none; color: var(--text); 
+            font-weight: 600; cursor: pointer; margin-left: 20px; transition: 0.2s;
+        }
+        .nav-links button:hover { color: var(--primary); }
         .nav-links button.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
         /* --- Sections --- */
-        section { padding: 40px 8%; display: none; }
+        section { padding: 40px 8%; display: none; animation: fadeIn 0.5s ease; }
         section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Product Grid --- */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .product-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .product-card:hover { transform: translateY(-5px); }
-        .card-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
-        .card-content { padding: 15px; text-align: center; }
+        /* --- Modern Product Grid --- */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+        .product-card { 
+            background: var(--card-bg); border-radius: 16px; overflow: hidden; 
+            transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05);
+        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; transition: 0.5s; }
+        .product-card:hover .card-img { scale: 1.05; }
+        .card-content { padding: 20px; text-align: center; }
+        .card-content h4 { margin: 10px 0 5px; font-size: 1.1rem; }
+        .price-tag { color: var(--primary); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; display: block; }
 
-        /* --- Dashboard --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .stat-value { font-size: 1.8em; font-weight: 700; color: var(--primary); }
+        /* --- Checkout Area --- */
+        .checkout-container { 
+            margin-top: 50px; background: var(--card-bg); padding: 30px; 
+            border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; 
+        }
+        @media (max-width: 768px) { .checkout-container { grid-template-columns: 1fr; } }
+
+        .basket-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .remove-btn { color: #ff4444; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+
+        /* --- Admin Dashboard --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { 
+            background: linear-gradient(135deg, var(--primary), #ff8a71); 
+            color: white; padding: 25px; border-radius: 16px; text-align: center; 
+        }
+        .stat-value { font-size: 2em; font-weight: 800; }
         
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.05); }
         th { background: var(--secondary); color: white; }
 
-        .btn-order { width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .mpesa-btn { background: #28a745 !important; margin-top: 15px; }
+        .btn-order { 
+            width: 100%; padding: 12px; background: var(--primary); color: #fff; 
+            border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .btn-order:hover { filter: brightness(1.1); scale: 1.02; }
+        .mpesa-btn { background: #28a745 !important; margin-top: 15px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
@@ -53,34 +92,41 @@
     <div class="nav-links">
         <button onclick="showPage('store')" id="btn-store" class="active">Store</button>
         <button onclick="showPage('dashboard')" id="btn-dash">Admin Dashboard</button>
-        <button onclick="toggleDarkMode()">🌓</button>
+        <button onclick="toggleDarkMode()" style="font-size: 1.2rem;">🌓</button>
     </div>
 </nav>
 
 <section id="store" class="active">
-    <div style="margin-bottom: 30px;">
-        <input type="text" id="searchBar" placeholder="Search 30+ items..." onkeyup="filterProducts()" style="padding: 12px; width: 100%; border-radius: 25px; border: 1px solid #ddd;">
+    <div style="margin-bottom: 40px; text-align: center;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Our Premium Bakery</h1>
+        <p style="opacity: 0.7;">Freshly baked everyday with love.</p>
+        <input type="text" id="searchBar" placeholder="Search our 30+ delicious items..." onkeyup="filterProducts()" 
+               style="padding: 15px 25px; width: 60%; border-radius: 30px; border: 1px solid #ddd; outline: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
     </div>
+    
     <div class="products-grid" id="productGrid"></div>
 
-    <div style="margin-top: 40px; background: var(--card-bg); padding: 25px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="checkout-container">
         <div>
-            <h3>Your Basket</h3>
-            <div id="basketList">Your basket is empty.</div>
+            <h3>Your Basket 🧺</h3>
+            <div id="basketList" style="margin-bottom: 20px; max-height: 200px; overflow-y: auto;">Your basket is empty.</div>
             <h2 id="totalAmount">Total: KES 0</h2>
         </div>
         <form id="paymentForm">
-            <h3>M-Pesa Checkout</h3>
-            <input type="tel" id="mpesaPhone" placeholder="2547XXXXXXXX" required style="width:100%; padding:12px; margin-bottom:10px; border-radius: 8px; border: 1px solid #ccc;">
-            <button type="submit" id="payBtn" class="btn-order mpesa-btn">Pay via M-Pesa</button>
+            <h3>Secure Checkout 🔒</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 15px;">Enter M-Pesa number to receive a payment prompt.</p>
+            <input type="tel" id="mpesaPhone" placeholder="e.g., 254712345678" required 
+                   style="width:100%; padding:15px; margin-bottom:15px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box;">
+            <button type="submit" id="payBtn" class="btn-order mpesa-btn">Complete Payment</button>
         </form>
     </div>
 </section>
 
 <section id="dashboard">
+    <h2 style="margin-bottom: 30px;">Business Overview</h2>
     <div class="stats-grid">
-        <div class="stat-card"><p>Total Sales</p><div class="stat-value">KES <span id="dash-revenue">0</span></div></div>
-        <div class="stat-card"><p>Orders Today</p><div class="stat-value" id="dash-orders">0</div></div>
+        <div class="stat-card"><p>Total Revenue</p><div class="stat-value">KES <span id="dash-revenue">0</span></div></div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--secondary), #64b5f6);"><p>Orders Today</p><div class="stat-value" id="dash-orders">0</div></div>
     </div>
     <h3>Live Transaction Log</h3>
     <table>
@@ -91,65 +137,93 @@
 
 <script>
     let basket = [];
-    // REPLACE THIS with your actual Google Script Web App URL
     const GOOGLE_SHEET_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
 
-    // --- 1. GENERATE 30 PRODUCTS ---
-    const menuItems = ["Choco Fudge", "Vanilla Cloud", "Glazed Donut", "Fruit Tart", "Red Velvet", "Cinnamon Roll"];
+    // --- 1. ENHANCED PRODUCT LOADER ---
+    const menuItems = ["Choco Fudge Cake", "Vanilla Cloud", "Glazed Donut", "Fruit Tart", "Red Velvet Luxury", "Cinnamon Roll"];
+    
     function loadProducts() {
         const grid = document.getElementById('productGrid');
+        grid.innerHTML = ''; // Clear grid
         for(let i=1; i<=30; i++) {
             const item = menuItems[(i-1) % menuItems.length];
             const price = 600 + (i * 20);
             grid.innerHTML += `
                 <div class="product-card" data-name="${item}">
-                    <img src="images/cake${i}.jpg" class="card-img" onerror="this.src='https://via.placeholder.com/200x160?text=Bakery+Item'">
+                    <img src="images/cake${i}.jpg" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80'">
                     <div class="card-content">
                         <h4>${item} #${i}</h4>
-                        <p>KES ${price}</p>
+                        <span class="price-tag">KES ${price}</span>
                         <button class="btn-order" onclick="addToBasket('${item} #${i}', ${price})">Add to Basket</button>
                     </div>
                 </div>`;
         }
     }
 
-    // --- 2. BASKET LOGIC ---
+    // --- 2. ENHANCED BASKET LOGIC ---
     function addToBasket(name, price) {
-        basket.push({name, price});
+        basket.push({id: Date.now(), name, price});
+        updateBasketUI();
+    }
+
+    function removeFromBasket(id) {
+        basket = basket.filter(item => item.id !== id);
+        updateBasketUI();
+    }
+
+    function updateBasketUI() {
         const list = document.getElementById('basketList');
-        list.innerHTML = basket.map(i => `<div style="display:flex; justify-content:space-between;"><span>${i.name}</span><span>KES ${i.price}</span></div>`).join('');
+        if(basket.length === 0) {
+            list.innerHTML = "Your basket is empty.";
+        } else {
+            list.innerHTML = basket.map(i => `
+                <div class="basket-item">
+                    <span>${i.name}</span>
+                    <span>KES ${i.price} <span class="remove-btn" onclick="removeFromBasket(${i.id})"> [X]</span></span>
+                </div>`).join('');
+        }
         const total = basket.reduce((sum, i) => sum + i.price, 0);
         document.getElementById('totalAmount').innerText = `Total: KES ${total}`;
     }
 
-    // --- 3. MPESA & SHEETS SYNC ---
+    // --- 3. MPESA & BACKEND SYNC ---
     document.getElementById('paymentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const phone = document.getElementById('mpesaPhone').value;
         const total = basket.reduce((sum, i) => sum + i.price, 0);
 
-        // Send to your Node.js Backend
-        fetch('http://localhost:3000/pay', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({phone, amount: total})
-        });
+        if(total === 0) return alert("Please add items to your basket first!");
 
-        // Log to Google Sheets
+        // 1. Send to Node.js Backend (STK PUSH)
+        try {
+            fetch('http://localhost:3000/pay', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({phone, amount: total})
+            });
+        } catch(err) { console.log("Backend offline, continuing UI update..."); }
+
+        // 2. Log to Google Sheets
         fetch(GOOGLE_SHEET_URL, {
             method: 'POST',
             mode: 'no-cors',
-            body: JSON.stringify({phone, amount: total})
+            body: JSON.stringify({phone, amount: total, date: new Date().toISOString()})
         });
 
-        // Update Dashboard
-        const row = `<tr><td>${new Date().toLocaleTimeString()}</td><td>${phone}</td><td>KES ${total}</td><td>✅ Sent</td></tr>`;
+        // 3. Update UI Dashboard
+        const row = `<tr><td>${new Date().toLocaleTimeString()}</td><td>${phone}</td><td>KES ${total}</td><td><span style="color:var(--success)">● Sent</span></td></tr>`;
         document.getElementById('transaction-table').insertAdjacentHTML('afterbegin', row);
-        document.getElementById('dash-revenue').innerText = parseInt(document.getElementById('dash-revenue').innerText) + total;
-        document.getElementById('dash-orders').innerText = parseInt(document.getElementById('dash-orders').innerText) + 1;
+        
+        // Update Stats
+        let rev = document.getElementById('dash-revenue');
+        rev.innerText = (parseInt(rev.innerText.replace(/,/g, '')) + total).toLocaleString();
+        
+        let orders = document.getElementById('dash-orders');
+        orders.innerText = parseInt(orders.innerText) + 1;
 
-        alert("M-Pesa Push Sent! Sales logged to dashboard.");
+        alert("M-Pesa Prompt Sent to " + phone);
         basket = [];
+        updateBasketUI();
     });
 
     // --- UTILITIES ---
@@ -157,7 +231,7 @@
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
         document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + (pageId === 'store' ? 'store' : 'dash')).classList.add('active');
+        document.getElementById(pageId === 'store' ? 'btn-store' : 'btn-dash').classList.add('active');
     }
 
     function filterProducts() {
