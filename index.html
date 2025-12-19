@@ -1,236 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Hawani Bakers – Delicious cakes, breads, and doughnuts delivered to you. Place orders online with instant notifications via Telegram & WhatsApp." />
-  <title>Hawani Bakers</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Montserrat', sans-serif; margin:0; padding:0; background:#fdf5f0; color:#333; }
-    header { background:#ff6f61; color:#fff; padding:20px 0; text-align:center; }
-    header h1 { margin:0; font-size:2.5em; }
-    nav { text-align:center; background:#ff8c75; padding:10px 0; }
-    nav a { color:#fff; margin:0 15px; text-decoration:none; font-weight:600; }
-    section { padding:50px 20px; max-width:1200px; margin:0 auto; }
-    h2 { text-align:center; color:#ff6f61; margin-bottom:40px; }
-    .products, .testimonials, .faq, .basket-items { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
-    .product, .testimonial, .faq-item, .basket-item { background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:300px; }
-    .product img { width:100%; border-radius:12px; }
-    .order-section { max-width:800px; margin:0 auto; }
-    .basket { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-bottom:30px; }
-    .basket h3 { margin-top:0; }
-    .basket p { margin:5px 0; }
-    .basket-total { font-weight:700; font-size:1.2em; margin-top:10px; }
-    .order-form input, .order-form select, .order-form textarea, .order-form button { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ccc; }
-    .order-form button { background:#ff6f61; color:#fff; border:none; cursor:pointer; font-weight:600; }
-    footer { background:#333; color:#fff; text-align:center; padding:30px 20px; }
-    footer a { color:#ff6f61; margin:0 10px; text-decoration:none; }
-    @media(max-width:768px) { .products, .testimonials, .faq, .basket-items { flex-direction:column; align-items:center; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hawani Bakers | Premium Store & Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #ff6f61; --secondary: #4a90e2; --success: #2ecc71;
+            --bg: #fdf5f0; --text: #333; --card-bg: #fff;
+        }
+        body.dark-mode { --bg: #1a1a1a; --text: #f0f0f0; --card-bg: #2d2d2d; }
+
+        body { font-family: 'Montserrat', sans-serif; margin:0; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+        /* --- Navigation --- */
+        nav {
+            background: var(--card-bg); padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-links button { background: none; border: none; color: var(--text); font-weight: 600; cursor: pointer; margin-left: 20px; }
+        .nav-links button.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        /* --- Sections --- */
+        section { padding: 40px 8%; display: none; }
+        section.active { display: block; }
+
+        /* --- Product Grid --- */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .product-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .product-card:hover { transform: translateY(-5px); }
+        .card-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+        .card-content { padding: 15px; text-align: center; }
+
+        /* --- Dashboard --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .stat-value { font-size: 1.8em; font-weight: 700; color: var(--primary); }
+        
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        th { background: var(--secondary); color: white; }
+
+        .btn-order { width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .mpesa-btn { background: #28a745 !important; margin-top: 15px; }
+    </style>
 </head>
 <body>
 
-<header>
-  <h1>Hawani Bakers</h1>
-  <p>Delicious Cakes, Breads & Doughnuts Delivered to You!</p>
-</header>
-
 <nav>
-  <a href="#products">Products</a>
-  <a href="#order">Order Now</a>
-  <a href="#testimonials">Testimonials</a>
-  <a href="#faq">FAQ</a>
-  <a href="#contact">Contact</a>
+    <div class="logo"><strong>HAWANI</strong> BAKERS</div>
+    <div class="nav-links">
+        <button onclick="showPage('store')" id="btn-store" class="active">Store</button>
+        <button onclick="showPage('dashboard')" id="btn-dash">Admin Dashboard</button>
+        <button onclick="toggleDarkMode()">🌓</button>
+    </div>
 </nav>
 
-<section id="products">
-  <h2>Our Products</h2>
-  <div class="products">
-    <div class="product" data-name="Chocolate Cake" data-price="1500">
-      <img src="images/choco.jpg" alt="Vanilla Bread">
-      <h3>Chocolate Cake</h3>
-      <p>Price: KES 1500</p>
-      <label>Quantity: <input type="number" class="quantity" min="1" value="1"></label>
-      <button class="add-to-basket">Add to Basket</button>
+<section id="store" class="active">
+    <div style="margin-bottom: 30px;">
+        <input type="text" id="searchBar" placeholder="Search 30+ items..." onkeyup="filterProducts()" style="padding: 12px; width: 100%; border-radius: 25px; border: 1px solid #ddd;">
     </div>
-    <div class="product" data-name="Vanilla Bread" data-price="800">
-      <img src="images/vanilla.jpg" alt="Vanilla Bread">
+    <div class="products-grid" id="productGrid"></div>
 
-      <h3>Vanilla Bread</h3>
-      <p>Price: KES 800</p>
-      <label>Quantity: <input type="number" class="quantity" min="1" value="1"></label>
-      <button class="add-to-basket">Add to Basket</button>
+    <div style="margin-top: 40px; background: var(--card-bg); padding: 25px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+            <h3>Your Basket</h3>
+            <div id="basketList">Your basket is empty.</div>
+            <h2 id="totalAmount">Total: KES 0</h2>
+        </div>
+        <form id="paymentForm">
+            <h3>M-Pesa Checkout</h3>
+            <input type="tel" id="mpesaPhone" placeholder="2547XXXXXXXX" required style="width:100%; padding:12px; margin-bottom:10px; border-radius: 8px; border: 1px solid #ccc;">
+            <button type="submit" id="payBtn" class="btn-order mpesa-btn">Pay via M-Pesa</button>
+        </form>
     </div>
-    <div class="product" data-name="Doughnuts" data-price="150">
-      <img src="images/doughnut2.jpg" alt="Vanilla Bread">
-      <h3>Doughnuts</h3>
-      <p>Price: KES 150 each</p>
-      <label>Quantity: <input type="number" class="quantity" min="1" value="1"></label>
-      <button class="add-to-basket">Add to Basket</button>
-    </div>
-  </div>
 </section>
 
-<section id="order">
-  <h2>Place Your Order</h2>
-  <div class="order-section">
-    <div class="basket">
-      <h3>Your Basket</h3>
-      <div class="basket-items"></div>
-      <p class="basket-total">Delivery Fee: KES 200</p>
+<section id="dashboard">
+    <div class="stats-grid">
+        <div class="stat-card"><p>Total Sales</p><div class="stat-value">KES <span id="dash-revenue">0</span></div></div>
+        <div class="stat-card"><p>Orders Today</p><div class="stat-value" id="dash-orders">0</div></div>
     </div>
-
-    <form class="order-form" id="orderForm">
-      <input type="text" id="name" placeholder="Your Name" required>
-      <input type="email" id="email" placeholder="Your Email" required>
-      <input type="tel" id="phone" placeholder="Your Phone Number" required>
-      <textarea id="message" placeholder="Additional Notes (Optional)"></textarea>
-      <button type="submit">Submit Order</button>
-    </form>
-  </div>
+    <h3>Live Transaction Log</h3>
+    <table>
+        <thead><tr><th>Time</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="transaction-table"></tbody>
+    </table>
 </section>
-
-<section id="promotions">
-  <h2>Promotions & Discounts</h2>
-  <p>Use code <strong>BAKERY10</strong> to get 10% off your first order! (Placeholder)</p>
-</section>
-
-<section id="testimonials">
-  <h2>Customer Testimonials</h2>
-  <div class="testimonials">
-    <div class="testimonial">
-      <p>"Absolutely loved the chocolate cake! Highly recommend." – Jane W.</p>
-    </div>
-    <div class="testimonial">
-      <p>"Fast delivery and the bread was fresh. Will order again." – David K.</p>
-    </div>
-    <div class="testimonial">
-      <p>"Doughnuts were a hit at the party. Great taste!" – Mary A.</p>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <h2>FAQ</h2>
-  <div class="faq">
-    <div class="faq-item">
-      <h4>Do you deliver everywhere in Kenya?</h4>
-      <p>We deliver to Nairobi, Mombasa, Kisumu, and surrounding areas. Delivery fee is KES 200.</p>
-    </div>
-    <div class="faq-item">
-      <h4>How do I pay for my order?</h4>
-      <p>We accept M-Pesa and PayPal for online payments. Cash on delivery is available in select areas.</p>
-    </div>
-    <div class="faq-item">
-      <h4>Can I customize my cake?</h4>
-      <p>Yes! Add your preferences in the 'Additional Notes' section of the order form.</p>
-    </div>
-  </div>
-</section>
-
-<section id="contact">
-  <h2>Contact Us</h2>
-  <p>Operating Hours: Mon-Sat 8:00 AM – 8:00 PM</p>
-  <p>Email: <a href="mailto:hawani@example.com">hawani@example.com</a></p>
-  <p>Phone/WhatsApp: <a href="https://wa.me/254710554317" target="_blank">0710 554 317</a></p>
-  <p>Follow us on:
-    <a href="#">Facebook</a> |
-    <a href="#">Instagram</a> |
-    <a href="#">TikTok</a> |
-    <a href="#">Twitter</a> |
-    <a href="#">YouTube</a> |
-    <a href="#">Telegram</a>
-  </p>
-</section>
-
-<footer>
-  <p>&copy; 2025 Hawani Bakers. All rights reserved.</p>
-  <p>
-    <a href="#">Privacy Policy</a> |
-    <a href="#">Terms & Conditions</a>
-  </p>
-</footer>
 
 <script>
-  const telegramToken = '8461355282:AAG6A1ILwFtghNZAI0IVkXtcXqlIUEwej-w';
-  const telegramChatId = '7109302597';
-  const deliveryFee = 200;
-  let basket = [];
+    let basket = [];
+    // REPLACE THIS with your actual Google Script Web App URL
+    const GOOGLE_SHEET_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; 
 
-  function updateBasket() {
-    const basketItemsDiv = document.querySelector('.basket-items');
-    basketItemsDiv.innerHTML = '';
-    let total = 0;
-
-    basket.forEach(item => {
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('basket-item');
-      itemDiv.innerHTML = `${item.name} x ${item.quantity} = KES ${item.price * item.quantity}`;
-      basketItemsDiv.appendChild(itemDiv);
-      total += item.price * item.quantity;
-    });
-
-    const basketTotal = document.querySelector('.basket-total');
-    basketTotal.textContent = `Total: KES ${total + deliveryFee} (includes Delivery Fee: KES ${deliveryFee})`;
-  }
-
-  document.querySelectorAll('.add-to-basket').forEach(button => {
-    button.addEventListener('click', () => {
-      const productDiv = button.parentElement;
-      const name = productDiv.dataset.name;
-      const price = parseInt(productDiv.dataset.price);
-      const quantity = parseInt(productDiv.querySelector('.quantity').value);
-
-      const exists = basket.find(item => item.name === name);
-      if (!exists) {
-        basket.push({name, price, quantity});
-        updateBasket();
-        alert(`${name} added to basket.`);
-      } else {
-        alert(`${name} is already in the basket.`);
-      }
-    });
-  });
-
-  document.getElementById('orderForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (basket.length === 0) {
-      alert('Your basket is empty!');
-      return;
+    // --- 1. GENERATE 30 PRODUCTS ---
+    const menuItems = ["Choco Fudge", "Vanilla Cloud", "Glazed Donut", "Fruit Tart", "Red Velvet", "Cinnamon Roll"];
+    function loadProducts() {
+        const grid = document.getElementById('productGrid');
+        for(let i=1; i<=30; i++) {
+            const item = menuItems[(i-1) % menuItems.length];
+            const price = 600 + (i * 20);
+            grid.innerHTML += `
+                <div class="product-card" data-name="${item}">
+                    <img src="images/cake${i}.jpg" class="card-img" onerror="this.src='https://via.placeholder.com/200x160?text=Bakery+Item'">
+                    <div class="card-content">
+                        <h4>${item} #${i}</h4>
+                        <p>KES ${price}</p>
+                        <button class="btn-order" onclick="addToBasket('${item} #${i}', ${price})">Add to Basket</button>
+                    </div>
+                </div>`;
+        }
     }
 
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const message = document.getElementById('message').value;
+    // --- 2. BASKET LOGIC ---
+    function addToBasket(name, price) {
+        basket.push({name, price});
+        const list = document.getElementById('basketList');
+        list.innerHTML = basket.map(i => `<div style="display:flex; justify-content:space-between;"><span>${i.name}</span><span>KES ${i.price}</span></div>`).join('');
+        const total = basket.reduce((sum, i) => sum + i.price, 0);
+        document.getElementById('totalAmount').innerText = `Total: KES ${total}`;
+    }
 
-    let orderText = `New Order from Hawani Bakers:\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nItems:\n`;
-    basket.forEach(item => {
-      orderText += `${item.name} x ${item.quantity} = KES ${item.price * item.quantity}\n`;
+    // --- 3. MPESA & SHEETS SYNC ---
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('mpesaPhone').value;
+        const total = basket.reduce((sum, i) => sum + i.price, 0);
+
+        // Send to your Node.js Backend
+        fetch('http://localhost:3000/pay', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({phone, amount: total})
+        });
+
+        // Log to Google Sheets
+        fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({phone, amount: total})
+        });
+
+        // Update Dashboard
+        const row = `<tr><td>${new Date().toLocaleTimeString()}</td><td>${phone}</td><td>KES ${total}</td><td>✅ Sent</td></tr>`;
+        document.getElementById('transaction-table').insertAdjacentHTML('afterbegin', row);
+        document.getElementById('dash-revenue').innerText = parseInt(document.getElementById('dash-revenue').innerText) + total;
+        document.getElementById('dash-orders').innerText = parseInt(document.getElementById('dash-orders').innerText) + 1;
+
+        alert("M-Pesa Push Sent! Sales logged to dashboard.");
+        basket = [];
     });
-    orderText += `Delivery Fee: KES ${deliveryFee}\n`;
-    orderText += `Notes: ${message}\nTotal: KES ${basket.reduce((sum, i) => sum + i.price*i.quantity, 0) + deliveryFee}`;
 
-    // Send to Telegram
-    fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: telegramChatId, text: orderText })
-    }).then(response => {
-      alert('Order sent successfully! You will receive a confirmation on your phone.');
-      document.getElementById('orderForm').reset();
-      basket = [];
-      updateBasket();
-    }).catch(err => alert('Error sending order to Telegram.'));
+    // --- UTILITIES ---
+    function showPage(pageId) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + (pageId === 'store' ? 'store' : 'dash')).classList.add('active');
+    }
 
-    // WhatsApp link
-    const whatsappLink = `https://wa.me/254710554317?text=${encodeURIComponent(orderText)}`;
-    window.open(whatsappLink, '_blank');
+    function filterProducts() {
+        let input = document.getElementById('searchBar').value.toLowerCase();
+        let cards = document.getElementsByClassName('product-card');
+        for (let card of cards) {
+            let name = card.getAttribute('data-name').toLowerCase();
+            card.style.display = name.includes(input) ? "block" : "none";
+        }
+    }
 
-    // Email confirmation placeholder (manual call to confirm order)
-  });
+    function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+    window.onload = loadProducts;
 </script>
-
 </body>
 </html>
